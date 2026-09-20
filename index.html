@@ -647,10 +647,10 @@ img {
     color: #2B524E;
 }
 
+/* Контейнер карусели: стрелки лежат поверх карточек,
+   поэтому лента занимает всю ширину секции */
 .articles-carousel {
-    display: flex;
-    align-items: center;
-    gap: clamp(12px, 2.2vw, 35px);
+    position: relative;
     max-width: 1500px;
     margin: 0 auto;
 }
@@ -660,8 +660,10 @@ img {
     gap: 35px;
     overflow-x: auto;
     scroll-behavior: smooth;
-    padding: 20px 0;
-    flex: 1;
+    /* Небольшие боковые поля: наклонённые карточки не задевают край ленты,
+       а scroll-padding делает фиксацию одинаковой для всех карточек */
+    padding: 20px 10px;
+    scroll-padding: 0 10px;
     min-width: 0;
     /* Скролл не «съедает» жест зума двумя пальцами на телефоне */
     touch-action: pan-x pinch-zoom;
@@ -687,9 +689,9 @@ img {
 .article-card {
     position: relative;
     flex: 0 0 auto;
-    /* Карточка шире и ниже прежнего — пропорция ближе к квадратной */
-    width: 400px;
-    max-width: 85vw;
+    /* Ровно 3 карточки на ширину ленты: в ряду нет обрезанных огрызков.
+       На планшете — 2, на телефоне — 1 (см. media-запросы) */
+    width: calc((100% - 70px) / 3);
     scroll-snap-align: start;
     display: flex;
     flex-direction: column;
@@ -814,26 +816,38 @@ img {
     box-shadow: 0 6px 15px rgba(255,214,0,0.3);
 }
 
+/* Стрелки лежат прямо поверх карточек, а не занимают место по бокам */
 .carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 20;
     width: clamp(44px, 4.5vw, 70px);
     height: clamp(44px, 4.5vw, 70px);
     border-radius: 50%;
     border: 5px solid #000;
-    background: #fff;
+    background: rgba(255,255,255,0.95);
     font-size: clamp(20px, 2vw, 32px);
     font-weight: 900;
     cursor: pointer;
-    flex-shrink: 0;
     transition: all 0.3s;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
+.carousel-btn.prev {
+    left: 8px;
+}
+
+.carousel-btn.next {
+    right: 8px;
+}
+
 .carousel-btn:hover {
     background: #DE9400;
-    transform: scale(1.25) rotate(-20deg);
+    transform: translateY(-50%) scale(1.15) rotate(-10deg);
     box-shadow: 0 10px 30px rgba(255,214,0,0.4);
 }
 
@@ -1210,8 +1224,27 @@ footer a:hover {
     .stats {
         flex-direction: column;
     }
+    /* Планшет: ровно 2 карточки на ширину ленты */
     .article-card {
-        width: min(400px, 78vw);
+        width: calc((100% - 35px) / 2);
+    }
+}
+
+/* Узкий телефон: ровно 1 карточка на ширину ленты,
+   стрелки компактнее и ближе к краям */
+@media (max-width: 480px) {
+    .article-card {
+        width: 100%;
+    }
+    .carousel-track {
+        gap: 20px;
+        scroll-padding: 0 10px;
+    }
+    .carousel-btn.prev {
+        left: 4px;
+    }
+    .carousel-btn.next {
+        right: 4px;
     }
 }
 
@@ -1272,11 +1305,15 @@ footer a:hover {
         transform: rotate(-3deg) skew(-2deg);
         box-shadow: 12px 12px 0px #000, 24px 24px 0px rgba(0,0,0,0.1);
     }
-    .slider-btn:hover,
-    .carousel-btn:hover {
+    .slider-btn:hover {
         background: #fff;
         transform: none;
         box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+    }
+    .carousel-btn:hover {
+        background: rgba(255,255,255,0.95);
+        transform: translateY(-50%);
+        box-shadow: 0 6px 18px rgba(0,0,0,0.35);
     }
     .stat-item:hover {
         transform: rotate(-3deg) skew(-1deg);
