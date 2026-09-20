@@ -665,6 +665,9 @@ img {
     min-width: 0;
     /* Скролл не «съедает» жест зума двумя пальцами на телефоне */
     touch-action: pan-x pinch-zoom;
+    /* Лента всегда останавливается ровно на карточке,
+       поэтому края не выглядят оборванными */
+    scroll-snap-type: x mandatory;
 }
 
 .carousel-track::-webkit-scrollbar {
@@ -684,8 +687,12 @@ img {
 .article-card {
     position: relative;
     flex: 0 0 auto;
-    width: 340px;
+    /* Карточка шире и ниже прежнего — пропорция ближе к квадратной */
+    width: 400px;
     max-width: 85vw;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
     background: rgba(255, 255, 255, 0.99);
     border: 8px solid #000;
     padding: 0;
@@ -720,16 +727,19 @@ img {
 
 .article-card img {
     width: 100%;
-    height: 220px;
+    /* Высота зависит от ширины карточки, поэтому картинка
+       не выглядит ни сплюснутой, ни вытянутой на любом экране */
+    aspect-ratio: 16 / 10;
+    height: auto;
     object-fit: cover;
     border-bottom: 6px solid #000;
+    flex-shrink: 0;
 }
 
 .article-card h3 {
-    padding: 25px;
+    padding: 22px 25px 8px;
     font-size: clamp(16px, 1.1rem, 19px);
     line-height: 1.45;
-    min-height: 110px;
     font-weight: 700;
 }
 
@@ -780,7 +790,9 @@ img {
 .read-more {
     display: block;
     width: calc(100% - 50px);
-    margin: 25px;
+    /* Кнопка всегда прижата к низу карточки — у всех карточек
+       в ряду кнопки выровнены, даже если заголовки разной длины */
+    margin: auto 25px 25px;
     padding: 15px;
     background: #000;
     color: #DE9400;
@@ -1199,7 +1211,7 @@ footer a:hover {
         flex-direction: column;
     }
     .article-card {
-        width: min(340px, 60vw);
+        width: min(400px, 78vw);
     }
 }
 
